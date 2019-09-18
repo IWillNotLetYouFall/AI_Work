@@ -9,6 +9,7 @@
 #include "misc/ConsoleUtils.h"
 #include "EntityNames.h"
 
+//CROTZ
 
 std::ofstream os;
 

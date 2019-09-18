@@ -1,2 +1,18 @@
-﻿  WestWorldWithMessaging.vcxproj -> C:\Users\Mikael\Downloads\AI_Devoir1\Buckland_Chapter2-State Machines\WestWorldWithMessaging\.\Debug\WestWorldWithMessaging.exe
-  WestWorldWithMessaging.vcxproj -> .\Debug\WestWorldWithMessaging.pdb (Full PDB)
+﻿  MinersWifeOwnedStates.cpp
+c:\users\alexis\desktop\bon travail ai\ai_work\ai_devoir1\buckland_chapter2-state machines\westworldwithmessaging\minerswifeownedstates.h(12): fatal error C1083: Cannot open include file: 'fsm/State.h': No such file or directory
+  MinersWife.cpp
+c:\users\alexis\desktop\bon travail ai\ai_work\ai_devoir1\buckland_chapter2-state machines\westworldwithmessaging\minerswife.h(15): fatal error C1083: Cannot open include file: 'fsm/State.h': No such file or directory
+  MinerOwnedStates.cpp
+c:\users\alexis\desktop\bon travail ai\ai_work\ai_devoir1\buckland_chapter2-state machines\westworldwithmessaging\minerownedstates.h(13): fatal error C1083: Cannot open include file: 'fsm/State.h': No such file or directory
+  Miner.cpp
+c:\users\alexis\desktop\bon travail ai\ai_work\ai_devoir1\buckland_chapter2-state machines\westworldwithmessaging\basegameentity.h(14): fatal error C1083: Cannot open include file: 'messaging/Telegram.h': No such file or directory
+  MessageDispatcher.cpp
+c:\users\alexis\desktop\bon travail ai\ai_work\ai_devoir1\buckland_chapter2-state machines\westworldwithmessaging\messagedispatcher.h(18): fatal error C1083: Cannot open include file: 'misc/ConsoleUtils.h': No such file or directory
+  main.cpp
+c:\users\alexis\desktop\bon travail ai\ai_work\ai_devoir1\buckland_chapter2-state machines\westworldwithmessaging\basegameentity.h(14): fatal error C1083: Cannot open include file: 'messaging/Telegram.h': No such file or directory
+  EntityManager.cpp
+c:\users\alexis\desktop\bon travail ai\ai_work\ai_devoir1\buckland_chapter2-state machines\westworldwithmessaging\basegameentity.h(14): fatal error C1083: Cannot open include file: 'messaging/Telegram.h': No such file or directory
+  BaseGameEntity.cpp
+c:\users\alexis\desktop\bon travail ai\ai_work\ai_devoir1\buckland_chapter2-state machines\westworldwithmessaging\basegameentity.h(14): fatal error C1083: Cannot open include file: 'messaging/Telegram.h': No such file or directory
+  CrudeTimer.cpp
+  Generating Code...
