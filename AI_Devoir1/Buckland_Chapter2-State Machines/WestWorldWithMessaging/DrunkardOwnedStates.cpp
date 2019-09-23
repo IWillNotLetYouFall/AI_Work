@@ -28,12 +28,11 @@ DrunkardGlobalState* DrunkardGlobalState::Instance()
 
 void DrunkardGlobalState::Execute(Drunkard* drunkie)
 {
-	//1 in 10 chance of starting a fight (provided he is not already fighting)
-	if ((RandFloat() < 0.1) &&
-		!drunkie->GetFSM()->isInState(*StartingFights::Instance()))
-	{
+	//1 in 10 chance of starting a fight (provided he is not already fighting) then 2 in 10 chances to heckle
+	if ((RandFloat() < 0.1) && !drunkie->GetFSM()->isInState(*StartingFights::Instance()))
 		drunkie->GetFSM()->ChangeState(StartingFights::Instance());
-	}
+	else if ((RandFloat() < 0.2) && !drunkie->GetFSM()->isInState(*Heckle::Instance()))
+		drunkie->GetFSM()->ChangeState(Heckle::Instance());
 }
 
 bool DrunkardGlobalState::OnMessage(Drunkard* drunkie, const Telegram& msg)
@@ -74,7 +73,11 @@ Drink* Drink::Instance()
 
 void Drink::Enter(Drunkard* drunkie)
 {
-	cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Imma sippin' my good ol' whiskey!";
+	if (!drunkie->Drinking())
+	{
+		cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Imma sippin' my good ol' whiskey now!";
+		drunkie->SetDrinking(true);
+	}
 }
 
 
@@ -123,20 +126,34 @@ Heckle* Heckle::Instance()
 
 void Heckle::Enter(Drunkard* drunkie)
 {
-	cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Seein' some fellah I nevah seen befo'!";
+	cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Time for some good ol' heckle!";
 }
 
 
 void Heckle::Execute(Drunkard* drunkie)
 {
-	cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": THIS IS OUR TOWN SCRUB! BEAT IT!";
+	switch (RandInt(0, 2))
+	{
+	case 0:
+		cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": IMMA HECKLIN' THIS FELLA!";
+		break;
+
+	case 1:
+		cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": IMMA KICK THIS MAN'S BUTT";
+		break;
+
+	case 2:
+		cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": IMMA HIT ON THIS COOCOO'S WIFE";
+		break;
+	}
 
 	drunkie->GetFSM()->RevertToPreviousState();
 }
 
 void Heckle::Exit(Drunkard* drunkie)
 {
-	cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Damn outsiders! They're takin' our 'yobs!!";
+	cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Damn outsiders! They're takin' our jobs!!";
+	drunkie->SetDrinking(false);
 }
 
 
@@ -161,7 +178,7 @@ void StartingFights::Enter(Drunkard* drunkie)
 	//If drinking, the drunkard will want to fight
 	if (drunkie->Drinking())
 	{
-		cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Crackling mah fists";
+		cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Puttin' mah drink down an' cracking mah fists";
 		drunkie->SetDrinking(false);
 	}
 }
@@ -170,11 +187,12 @@ void StartingFights::Enter(Drunkard* drunkie)
 void StartingFights::Execute(Drunkard* drunkie)
 {
 	cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Breakin' tables and faces";
+	drunkie->GetFSM()->RevertToPreviousState();
 }
 
 void StartingFights::Exit(Drunkard* drunkie)
 {
-	SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+	SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 
 	cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Spittin' blood through mah broken teeth";
 }
