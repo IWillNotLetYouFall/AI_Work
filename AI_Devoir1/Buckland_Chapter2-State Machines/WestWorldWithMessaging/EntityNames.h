@@ -3,11 +3,13 @@
 
 #include <string>
 
-enum 
+enum
 {
   ent_Miner_Bob,
 
-  ent_Elsa
+  ent_Elsa,
+
+  ent_Drunkie
 };
 
 inline std::string GetNameOfEntity(int n)
@@ -21,6 +23,10 @@ inline std::string GetNameOfEntity(int n)
   case ent_Elsa:
     
     return "Elsa"; 
+
+  case ent_Drunkie:
+
+	return "Drunk man";
 
   default:
 
