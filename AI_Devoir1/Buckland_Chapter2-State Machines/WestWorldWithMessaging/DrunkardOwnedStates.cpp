@@ -6,6 +6,9 @@
 #include "MessageDispatcher.h"
 #include "MessageTypes.h"
 #include "EntityNames.h"
+#include <stdio.h>      /* printf, NULL */
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 
 #include <iostream>
 using std::cout;
@@ -28,10 +31,8 @@ DrunkardGlobalState* DrunkardGlobalState::Instance()
 
 void DrunkardGlobalState::Execute(Drunkard* drunkie)
 {
-	//1 in 10 chance of starting a fight (provided he is not already fighting) then 2 in 10 chances to heckle
-	if ((RandFloat() < 0.1) && !drunkie->GetFSM()->isInState(*StartingFights::Instance()))
-		drunkie->GetFSM()->ChangeState(StartingFights::Instance());
-	else if ((RandFloat() < 0.2) && !drunkie->GetFSM()->isInState(*Heckle::Instance()))
+	//2 in 10 chance of heckling
+	if ((RandFloat() < 0.2) && !drunkie->GetFSM()->isInState(*Heckle::Instance()))
 		drunkie->GetFSM()->ChangeState(Heckle::Instance());
 }
 
@@ -41,7 +42,7 @@ bool DrunkardGlobalState::OnMessage(Drunkard* drunkie, const Telegram& msg)
 
 	switch (msg.Msg)
 	{
-	case Msg_Annoyance:
+	case Msg_Enter:
 	{
 		cout << "\nMessage handled by " << GetNameOfEntity(drunkie->ID()) << " at time: "
 			<< Clock->GetCurrentTime();
@@ -49,11 +50,12 @@ bool DrunkardGlobalState::OnMessage(Drunkard* drunkie, const Telegram& msg)
 		SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 
 		cout << "\n" << GetNameOfEntity(drunkie->ID()) <<
-			": Listen here you flyin' didgeridoo. Come down to da saloon if ye dare!";
-
-		drunkie->GetFSM()->ChangeState(Drink::Instance());
+			": Listen here you flyin' didgeridoo. Miner Bob is comin' here from the canyon!";
+		if ((RandFloat() < 0.3))
+			drunkie->GetFSM()->ChangeState(Heckle::Instance());
+		else 
+			drunkie->GetFSM()->ChangeState(StartingFights::Instance());
 	}
-
 	return true;
 
 	}//end switch
@@ -75,6 +77,7 @@ void Drink::Enter(Drunkard* drunkie)
 {
 	if (!drunkie->Drinking())
 	{
+		SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 		cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Imma sippin' my good ol' whiskey now!";
 		drunkie->SetDrinking(true);
 	}
@@ -83,6 +86,7 @@ void Drink::Enter(Drunkard* drunkie)
 
 void Drink::Execute(Drunkard* drunkie)
 {
+	SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 	switch (RandInt(0, 2))
 	{
 	case 0:
@@ -126,12 +130,14 @@ Heckle* Heckle::Instance()
 
 void Heckle::Enter(Drunkard* drunkie)
 {
+	SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 	cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Time for some good ol' heckle!";
 }
 
 
 void Heckle::Execute(Drunkard* drunkie)
 {
+	SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 	switch (RandInt(0, 2))
 	{
 	case 0:
@@ -146,12 +152,19 @@ void Heckle::Execute(Drunkard* drunkie)
 		cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": IMMA HIT ON THIS COOCOO'S WIFE";
 		break;
 	}
+	SetTextColor(BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	Dispatch->DispatchMessage(SEND_MSG_IMMEDIATELY, //time delay
+		drunkie->ID(),        //ID of sender
+		ent_Miner_Bob,        //ID of recipient
+		Msg_Annoyance,   //the message
+		NO_ADDITIONAL_INFO);
 
 	drunkie->GetFSM()->RevertToPreviousState();
 }
 
 void Heckle::Exit(Drunkard* drunkie)
 {
+	SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 	cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Damn outsiders! They're takin' our jobs!!";
 	drunkie->SetDrinking(false);
 }
@@ -178,6 +191,7 @@ void StartingFights::Enter(Drunkard* drunkie)
 	//If drinking, the drunkard will want to fight
 	if (drunkie->Drinking())
 	{
+		SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 		cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Puttin' mah drink down an' cracking mah fists";
 		drunkie->SetDrinking(false);
 	}
@@ -186,7 +200,15 @@ void StartingFights::Enter(Drunkard* drunkie)
 
 void StartingFights::Execute(Drunkard* drunkie)
 {
+	SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 	cout << "\n" << GetNameOfEntity(drunkie->ID()) << ": Breakin' tables and faces";
+	
+	SetTextColor(BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	Dispatch->DispatchMessage(SEND_MSG_IMMEDIATELY, //time delay
+		drunkie->ID(),        //ID of sender
+		ent_Miner_Bob,        //ID of recipient
+		Msg_Boast,   //the message
+		NO_ADDITIONAL_INFO);
 	drunkie->GetFSM()->RevertToPreviousState();
 }
 
@@ -204,7 +226,7 @@ bool StartingFights::OnMessage(Drunkard* drunkie, const Telegram& msg)
 
 	switch (msg.Msg)
 	{
-	case Msg_Boast:
+	case Msg_StewReady:
 	{
 		cout << "\nMessage received by " << GetNameOfEntity(drunkie->ID()) <<
 			" at time: " << Clock->GetCurrentTime();
