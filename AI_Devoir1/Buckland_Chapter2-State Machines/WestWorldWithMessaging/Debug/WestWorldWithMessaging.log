@@ -1,2 +1,4 @@
-﻿  WestWorldWithMessaging.vcxproj -> C:\Users\Mikael\Downloads\AI_Devoir1\Buckland_Chapter2-State Machines\WestWorldWithMessaging\.\Debug\WestWorldWithMessaging.exe
+﻿  DrunkardOwnedStates.cpp
+e:\ai_work\ai_devoir1\buckland_chapter2-state machines\westworldwithmessaging\drunkardownedstates.cpp(53): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  WestWorldWithMessaging.vcxproj -> E:\AI_Work\AI_Devoir1\Buckland_Chapter2-State Machines\WestWorldWithMessaging\.\Debug\WestWorldWithMessaging.exe
   WestWorldWithMessaging.vcxproj -> .\Debug\WestWorldWithMessaging.pdb (Full PDB)
